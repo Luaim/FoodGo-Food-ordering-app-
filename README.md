@@ -33,7 +33,7 @@ FoodGo is revolutionizing the food delivery service in Malaysia by bridging the 
 * Security Features: Implement role-based access controls and data encryption to secure sensitive information.
 * Compliance Reporting: Tools to help comply with local regulations and reporting requirements.
 
-##### Setup and Installation
+# Setup and Installation
 1- Clone the repository:
 git clone https://github.com/yourusername/foodgo.git
 
