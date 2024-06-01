@@ -14,21 +14,21 @@ FoodGo is revolutionizing the food delivery service in Malaysia by bridging the 
 * UI Design: FlutterFlow for rapid prototyping and deployment
 * IDE: Visual Studio Code
 
-#### Features
+# Features
 
-# For Customers:
+## For Customers:
 * Real-Time Order Tracking: Customers can track their orders from preparation to delivery in real-time.
 * Dynamic Pricing: Adjusts prices in real-time based on demand, time of day, and special promotions.
 * Meal Customization: Allows customers to customize meals according to their dietary preferences.
 * Multiple Payment Options: Supports various payment methods including credit cards, online banking, and mobile wallets.
 
-# For Vendors:
+## For Vendors:
 * Order Management: A streamlined interface for accepting and managing orders.
 * Inventory Management: Real-time updates on inventory levels.
 * Sales Analytics: Detailed reports on customer preferences and buying patterns to optimize menu offerings.
 * Promotional Tools: Easy setup of discounts and special offers.
 
-# For Admins:
+## For Admins:
 * User Management: Oversee customer and vendor activities.
 * Security Features: Implement role-based access controls and data encryption to secure sensitive information.
 * Compliance Reporting: Tools to help comply with local regulations and reporting requirements.
@@ -47,19 +47,19 @@ flutter pub get
 flutter run
 
 
-##### Usage
+# Usage
 Here are some common tasks you can perform with FoodGo:
 
 * Placing an Order: Log in as a customer, browse the menu, and select items to add to your cart. Proceed to checkout, choose your delivery address and payment method, then place your order.
 * Viewing Order Status: Customers can view real-time updates on their order status from the dashboard.
 * Setting Up Promotions: Vendors can set up promotional prices and discounts directly through their vendor dashboard.
 
-##### Contributors
+# Contributors
 * Luai Mohammed Abdullah Al-Harazi
 * Chen Yean Ming
 * Joline Lee Zhi Hui
 
-##### License 
+# License 
 * This project is licensed under the MIT License - see the LICENSE.md file for details.
 
 
