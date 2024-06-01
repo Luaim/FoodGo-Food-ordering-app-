@@ -47,19 +47,19 @@ flutter pub get
 flutter run
 
 
-###### Usage
+##### Usage
 Here are some common tasks you can perform with FoodGo:
 
 * Placing an Order: Log in as a customer, browse the menu, and select items to add to your cart. Proceed to checkout, choose your delivery address and payment method, then place your order.
 * Viewing Order Status: Customers can view real-time updates on their order status from the dashboard.
 * Setting Up Promotions: Vendors can set up promotional prices and discounts directly through their vendor dashboard.
 
-###### Contributors
+##### Contributors
 * Luai Mohammed Abdullah Al-Harazi
 * Chen Yean Ming
 * Joline Lee Zhi Hui
 
-###### License 
+##### License 
 * This project is licensed under the MIT License - see the LICENSE.md file for details.
 
 
