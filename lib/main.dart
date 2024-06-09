@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'auth/firebase_auth/firebase_user_provider.dart';
 import 'auth/firebase_auth/auth_util.dart';
 
@@ -13,14 +15,25 @@ import 'index.dart';
 
 import 'package:http/http.dart';
 
+import 'package:mae1/common/login_page/user_service.dart';
+import 'package:mae1/common/login_page/login_page_model.dart';
+import 'package:mae1/common/login_page/login_page_model.dart';
+import 'package:mae1/admin/home_page/home_page_widget.dart';
+import 'package:mae1/admin/home_page/home_page_model.dart';
+import 'package:mae1/vendor/home/home_widget.dart';
+import 'package:mae1/vendor/home/home_model.dart';
+import 'package:mae1/customer/main_page/main_page_widget.dart';
+import 'package:mae1/customer/main_page/main_page_model.dart';
+
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   GoRouter.optionURLReflectsImperativeAPIs = true;
   usePathUrlStrategy();
+  
   await initFirebase();
-
+  await Firebase.initializeApp();
   await FlutterFlowTheme.initialize();
-
   await FFLocalizations.initialize();
 
   runApp(const MyApp());
@@ -197,6 +210,47 @@ class _NavBarPageState extends State<NavBarPage> {
             tooltip: '',
           )
         ],
+      ),
+    );
+  }
+}
+
+class RoleBasedHome extends StatefulWidget {
+  @override
+  _RoleBasedHomeState createState() => _RoleBasedHomeState();
+}
+
+class _RoleBasedHomeState extends State<RoleBasedHome> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final UserService _userService = UserService();
+  String? _role;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkUserRole();
+  }
+
+  Future<void> _checkUserRole() async {
+    String? role = await _userService.getUserRole();
+    setState(() {
+      _role = role;
+    });
+
+    if (role == 'Admin') {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePageWidget()));
+    } else if (role == 'Vendor') {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeWidget()));
+    } else if (role == 'Customer') {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainPageWidget()));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: _role == null ? CircularProgressIndicator() : Text('Redirecting...'),
       ),
     );
   }
