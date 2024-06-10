@@ -2,6 +2,8 @@ import '/flutter_flow/flutter_flow_data_table.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'user_analytics_widget.dart' show UserAnalyticsWidget;
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'user_analytics_model.dart';
 
 class UserAnalyticsModel extends FlutterFlowModel<UserAnalyticsWidget> {
   ///  State fields for stateful widgets in this page.
