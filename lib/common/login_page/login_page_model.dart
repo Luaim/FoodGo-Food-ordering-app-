@@ -1,6 +1,7 @@
 import '/flutter_flow/flutter_flow_util.dart';
 import 'login_page_widget.dart' show LoginPageWidget;
 import 'package:flutter/material.dart';
+import 'package:mae1/common/login_page/user_service.dart';
 
 class LoginPageModel extends FlutterFlowModel<LoginPageWidget> {
   ///  State fields for stateful widgets in this page.
@@ -63,5 +64,19 @@ class LoginPageModel extends FlutterFlowModel<LoginPageWidget> {
 
     passwordFocusNode?.dispose();
     passwordTextController?.dispose();
+  }
+}
+
+class UserRegistrationModel extends ChangeNotifier {
+  final UserService _userService = UserService();
+
+  Future<void> registerUser(String email, String password, String username) async {
+    try {
+      await _userService.registerUser(email, password, username);
+      notifyListeners();
+    } catch (e) {
+      print(e.toString());
+      throw e;
+    }
   }
 }
