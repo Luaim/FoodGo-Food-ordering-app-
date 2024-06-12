@@ -3,6 +3,7 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/random_data_util.dart' as random_data;
 import 'package:flutter/material.dart';
+import 'package:mae1/admin/admin_profile/admin_profile_widget.dart';
 import 'inventories_model.dart';
 export 'inventories_model.dart';
 
@@ -56,16 +57,25 @@ class _InventoriesWidgetState extends State<InventoriesWidget> {
                       letterSpacing: 0.0,
                     ),
               ),
-              Container(
-                width: 120.0,
-                height: 120.0,
-                clipBehavior: Clip.antiAlias,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                ),
-                child: Image.network(
-                  'https://picsum.photos/seed/761/600',
-                  fit: BoxFit.cover,
+              InkWell(
+                onTap: () {
+                  // Navigate to the admin profile page
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AdminProfileWidget()),
+                  );
+                },
+                child: Container(
+                  width: 120.0,
+                  height: 120.0,
+                  clipBehavior: Clip.antiAlias,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                  ),
+                  child: Image.network(
+                    'https://picsum.photos/seed/761/600',
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ],
