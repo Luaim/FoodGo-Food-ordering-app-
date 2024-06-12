@@ -1,6 +1,7 @@
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
+import 'package:mae1/admin/admin_profile/admin_profile_widget.dart';
 import 'home_page_model.dart';
 export 'home_page_model.dart';
 
@@ -53,6 +54,27 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                       fontSize: 30.0,
                       letterSpacing: 0.0,
                     ),
+              ),
+              InkWell(
+                onTap: () {
+                  // Navigate to the admin profile page
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AdminProfileWidget()),
+                  );
+                },
+                child: Container(
+                  width: 120.0,
+                  height: 120.0,
+                  clipBehavior: Clip.antiAlias,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                  ),
+                  child: Image.network(
+                    'https://picsum.photos/seed/761/600',
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
             ],
             centerTitle: false,
