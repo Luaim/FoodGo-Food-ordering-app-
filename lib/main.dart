@@ -25,12 +25,11 @@ import 'package:mae1/vendor/home/home_model.dart';
 import 'package:mae1/customer/main_page/main_page_widget.dart';
 import 'package:mae1/customer/main_page/main_page_model.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   GoRouter.optionURLReflectsImperativeAPIs = true;
   usePathUrlStrategy();
-  
+
   await initFirebase();
   await Firebase.initializeApp();
   await FlutterFlowTheme.initialize();
