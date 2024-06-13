@@ -43,6 +43,12 @@ class _NewUserWidgetState extends State<NewUserWidget> {
           child: AppBar(
             backgroundColor: FlutterFlowTheme.of(context).primary,
             automaticallyImplyLeading: false,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
             actions: [
               Text(
                 FFLocalizations.of(context).getText(
