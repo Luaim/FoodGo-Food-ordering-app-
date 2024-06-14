@@ -1,7 +1,7 @@
 import '/flutter_flow/flutter_flow_data_table.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/random_data_util.dart' as random_data;
+import 'package:flutter/material.dart';
 import 'package:mae1/admin/admin_profile/admin_profile_widget.dart';
 import 'package:mae1/common/login_page/login_page_widget.dart';
 import 'package:mae1/admin/home_page/home_page_widget.dart';
@@ -9,10 +9,8 @@ import 'package:mae1/admin/inventories/inventories_widget.dart';
 import 'package:mae1/admin/order_management/order_management_widget.dart';
 import 'package:mae1/admin/user_analytics/user_analytics_widget.dart';
 import 'package:mae1/complaint_chat_flow/chat_2_main/chat2_main_widget.dart';
-import 'package:flutter/material.dart';
 import 'transactions_model.dart';
 export 'transactions_model.dart';
-
 
 class TransactionsWidget extends StatefulWidget {
   const TransactionsWidget({super.key});
@@ -29,13 +27,13 @@ class _TransactionsWidgetState extends State<TransactionsWidget> {
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => TransactionsModel());
+    _model = TransactionsModel();
+    _model.fetchTransactions();
   }
 
   @override
   void dispose() {
-    _model.dispose();
-
+    _model.paginatedDataTableController.dispose();
     super.dispose();
   }
 
@@ -261,131 +259,125 @@ class _TransactionsWidgetState extends State<TransactionsWidget> {
                 ),
               ),
               Expanded(
-                child: Builder(
-                  builder: (context) {
-                    final transactionAnalytics = List.generate(
-                        random_data.randomInteger(5, 5),
-                        (index) => random_data.randomDouble(0.0, 1.0)).toList();
-                    return FlutterFlowDataTable<double>(
-                      controller: _model.paginatedDataTableController,
-                      data: transactionAnalytics,
-                      numRows: valueOrDefault<int>(
-                        random_data.randomInteger(1, 10),
-                        5,
-                      ),
-                      columnsBuilder: (onSortChanged) => [
-                        DataColumn2(
-                          label: DefaultTextStyle.merge(
-                            softWrap: true,
-                            child: Text(
-                              FFLocalizations.of(context).getText(
-                                'gfze0qjp' /* Edit Header 1 */,
-                              ),
-                              style: FlutterFlowTheme.of(context)
-                                  .labelLarge
-                                  .override(
-                                    fontFamily: 'Readex Pro',
-                                    letterSpacing: 0.0,
-                                  ),
-                            ),
-                          ),
-                        ),
-                        DataColumn2(
-                          label: DefaultTextStyle.merge(
-                            softWrap: true,
-                            child: Text(
-                              FFLocalizations.of(context).getText(
-                                'zko01kt3' /* Edit Header 2 */,
-                              ),
-                              style: FlutterFlowTheme.of(context)
-                                  .labelLarge
-                                  .override(
-                                    fontFamily: 'Readex Pro',
-                                    letterSpacing: 0.0,
-                                  ),
-                            ),
-                          ),
-                        ),
-                        DataColumn2(
-                          label: DefaultTextStyle.merge(
-                            softWrap: true,
-                            child: Text(
-                              FFLocalizations.of(context).getText(
-                                'dlp77ea1' /* Edit Header 3 */,
-                              ),
-                              style: FlutterFlowTheme.of(context)
-                                  .labelLarge
-                                  .override(
-                                    fontFamily: 'Readex Pro',
-                                    letterSpacing: 0.0,
-                                  ),
-                            ),
-                          ),
-                        ),
-                      ],
-                      dataRowBuilder: (transactionAnalyticsItem,
-                              transactionAnalyticsIndex,
-                              selected,
-                              onSelectChanged) =>
-                          DataRow(
-                        color: MaterialStateProperty.all(
-                          transactionAnalyticsIndex % 2 == 0
-                              ? FlutterFlowTheme.of(context).secondaryBackground
-                              : FlutterFlowTheme.of(context).primaryBackground,
-                        ),
-                        cells: [
-                          Text(
-                            FFLocalizations.of(context).getText(
-                              'zfhwz6l0' /* Edit Column 1 */,
-                            ),
-                            style: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .override(
+                child: FutureBuilder<void>(
+                  future: _model.fetchTransactions(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Error fetching data: ${snapshot.error}'));
+                    } else {
+                      final transactionTable = _model.transactions;
+                      return FlutterFlowDataTable<Map<String, dynamic>>(
+                        controller: _model.paginatedDataTableController,
+                        data: transactionTable,
+                        numRows: transactionTable.length,
+                        columnsBuilder: (onSortChanged) => [
+                          DataColumn2(
+                            label: DefaultTextStyle.merge(
+                              softWrap: true,
+                              child: Text(
+                                'Amount',
+                                style: FlutterFlowTheme.of(context).labelLarge.override(
                                   fontFamily: 'Readex Pro',
                                   letterSpacing: 0.0,
                                 ),
-                          ),
-                          Text(
-                            FFLocalizations.of(context).getText(
-                              'yvth2hlc' /* Edit Column 2 */,
+                              ),
                             ),
-                            style: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .override(
+                          ),
+                          DataColumn2(
+                            label: DefaultTextStyle.merge(
+                              softWrap: true,
+                              child: Text(
+                                'Payer',
+                                style: FlutterFlowTheme.of(context).labelLarge.override(
                                   fontFamily: 'Readex Pro',
                                   letterSpacing: 0.0,
                                 ),
-                          ),
-                          Text(
-                            FFLocalizations.of(context).getText(
-                              'jbmggzj6' /* Edit Column 3 */,
+                              ),
                             ),
-                            style: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .override(
+                          ),
+                          DataColumn2(
+                            label: DefaultTextStyle.merge(
+                              softWrap: true,
+                              child: Text(
+                                'Receiver',
+                                style: FlutterFlowTheme.of(context).labelLarge.override(
                                   fontFamily: 'Readex Pro',
                                   letterSpacing: 0.0,
                                 ),
+                              ),
+                            ),
                           ),
-                        ].map((c) => DataCell(c)).toList(),
-                      ),
-                      paginated: true,
-                      selectable: false,
-                      hidePaginator: false,
-                      showFirstLastButtons: false,
-                      headingRowHeight: 56.0,
-                      dataRowHeight: 48.0,
-                      columnSpacing: 20.0,
-                      headingRowColor: FlutterFlowTheme.of(context).primary,
-                      borderRadius: BorderRadius.circular(8.0),
-                      addHorizontalDivider: true,
-                      addTopAndBottomDivider: false,
-                      hideDefaultHorizontalDivider: true,
-                      horizontalDividerColor:
-                          FlutterFlowTheme.of(context).secondaryBackground,
-                      horizontalDividerThickness: 1.0,
-                      addVerticalDivider: false,
-                    );
+                          DataColumn2(
+                            label: DefaultTextStyle.merge(
+                              softWrap: true,
+                              child: Text(
+                                'Time',
+                                style: FlutterFlowTheme.of(context).labelLarge.override(
+                                  fontFamily: 'Readex Pro',
+                                  letterSpacing: 0.0,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                        dataRowBuilder: (transactionTableItem, transactionTableIndex,
+                            selected, onSelectChanged) =>
+                            DataRow(
+                              color: MaterialStateProperty.all(
+                                transactionTableIndex % 2 == 0
+                                    ? FlutterFlowTheme.of(context).secondaryBackground
+                                    : FlutterFlowTheme.of(context).primaryBackground,
+                              ),
+                              cells: [
+                                DataCell(Text(
+                                  transactionTableItem['Amount'].toString() ?? '',
+                                  style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                    fontFamily: 'Readex Pro',
+                                    letterSpacing: 0.0,
+                                  ),
+                                )),
+                                DataCell(Text(
+                                  transactionTableItem['Payer'] ?? '',
+                                  style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                    fontFamily: 'Readex Pro',
+                                    letterSpacing: 0.0,
+                                  ),
+                                )),
+                                DataCell(Text(
+                                  transactionTableItem['Receiver'] ?? '',
+                                  style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                    fontFamily: 'Readex Pro',
+                                    letterSpacing: 0.0,
+                                  ),
+                                )),
+                                DataCell(Text(
+                                  transactionTableItem['Time'] ?? '',
+                                  style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                    fontFamily: 'Readex Pro',
+                                    letterSpacing: 0.0,
+                                  ),
+                                )),
+                              ],
+                            ),
+                        paginated: true,
+                        selectable: false,
+                        hidePaginator: false,
+                        showFirstLastButtons: false,
+                        headingRowHeight: 56.0,
+                        dataRowHeight: 48.0,
+                        columnSpacing: 20.0,
+                        headingRowColor: FlutterFlowTheme.of(context).primary,
+                        borderRadius: BorderRadius.circular(8.0),
+                        addHorizontalDivider: true,
+                        addTopAndBottomDivider: false,
+                        hideDefaultHorizontalDivider: true,
+                        horizontalDividerColor: FlutterFlowTheme.of(context).secondaryBackground,
+                        horizontalDividerThickness: 1.0,
+                        addVerticalDivider: false,
+                      );
+                    }
                   },
                 ),
               ),
