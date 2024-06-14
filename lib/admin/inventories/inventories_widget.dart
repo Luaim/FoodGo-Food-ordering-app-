@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:mae1/admin/admin_profile/admin_profile_widget.dart';
 import 'package:mae1/common/login_page/login_page_widget.dart';
 import 'package:mae1/admin/home_page/home_page_widget.dart';
-import 'package:mae1/admin/new_user/new_user_widget.dart';
 import 'package:mae1/admin/order_management/order_management_widget.dart';
 import 'package:mae1/admin/transactions/transactions_widget.dart';
 import 'package:mae1/admin/user_analytics/user_analytics_widget.dart';
@@ -31,11 +30,12 @@ class _InventoriesWidgetState extends State<InventoriesWidget> {
   void initState() {
     super.initState();
     _model = createModel(context, () => InventoriesModel());
+    _model.fetchInventories();
   }
 
   @override
   void dispose() {
-    _model.dispose();
+    _model.paginatedDataTableController.dispose();
 
     super.dispose();
   }
@@ -248,135 +248,99 @@ class _InventoriesWidgetState extends State<InventoriesWidget> {
                 ),
               ),
               Expanded(
-                child: Builder(
-                  builder: (context) {
-                    final inventoryTable = List.generate(
-                        random_data.randomInteger(5, 5),
-                        (index) => random_data.randomString(
-                              0,
-                              0,
-                              true,
-                              true,
-                              true,
-                            )).toList();
-                    return FlutterFlowDataTable<String>(
-                      controller: _model.paginatedDataTableController,
-                      data: inventoryTable,
-                      numRows: valueOrDefault<int>(
-                        random_data.randomInteger(1, 10),
-                        5,
-                      ),
-                      columnsBuilder: (onSortChanged) => [
-                        DataColumn2(
-                          label: DefaultTextStyle.merge(
-                            softWrap: true,
-                            child: Text(
-                              FFLocalizations.of(context).getText(
-                                'im5bw7cj' /* Edit Header 1 */,
+                child: FutureBuilder<void>(
+                  future: _model.fetchInventories(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(
+                          child: Text('Error fetching data: ${snapshot.error}'));
+                    } else {
+                      final inventoryTable = _model.inventories;
+                      return FlutterFlowDataTable<String>(
+                        controller: _model.paginatedDataTableController,
+                        data: inventoryTable.map((item) => item.toString()).toList(),
+                        numRows: inventoryTable.length,
+                        columnsBuilder: (onSortChanged) => [
+                          DataColumn2(
+                            label: DefaultTextStyle.merge(
+                              softWrap: true,
+                              child: Text(
+                                'Name',
+                                style: FlutterFlowTheme.of(context)
+                                    .labelLarge
+                                    .override(
+                                      fontFamily: 'Readex Pro',
+                                      letterSpacing: 0.0,
+                                    ),
                               ),
+                            ),
+                          ),
+                          DataColumn2(
+                            label: DefaultTextStyle.merge(
+                              softWrap: true,
+                              child: Text(
+                                'Amount',
+                                style: FlutterFlowTheme.of(context)
+                                    .labelLarge
+                                    .override(
+                                      fontFamily: 'Readex Pro',
+                                      letterSpacing: 0.0,
+                                    ),
+                              ),
+                            ),
+                          ),
+                        ],
+                        dataRowBuilder: (inventoryTableItem, inventoryTableIndex,
+                                selected, onSelectChanged) =>
+                            DataRow(
+                          color: MaterialStateProperty.all(
+                            inventoryTableIndex % 2 == 0
+                                ? FlutterFlowTheme.of(context)
+                                    .secondaryBackground
+                                : FlutterFlowTheme.of(context).primaryBackground,
+                          ),
+                          cells: [
+                            DataCell(Text(
+                              inventoryTable[inventoryTableIndex]['Name'] ?? '',
                               style: FlutterFlowTheme.of(context)
-                                  .labelLarge
+                                  .bodyMedium
                                   .override(
                                     fontFamily: 'Readex Pro',
                                     letterSpacing: 0.0,
                                   ),
-                            ),
-                          ),
-                        ),
-                        DataColumn2(
-                          label: DefaultTextStyle.merge(
-                            softWrap: true,
-                            child: Text(
-                              FFLocalizations.of(context).getText(
-                                'clma2die' /* Edit Header 2 */,
-                              ),
+                            )),
+                            DataCell(Text(
+                              inventoryTable[inventoryTableIndex]['Amount']
+                                  .toString(),
                               style: FlutterFlowTheme.of(context)
-                                  .labelLarge
+                                  .bodyMedium
                                   .override(
                                     fontFamily: 'Readex Pro',
                                     letterSpacing: 0.0,
                                   ),
-                            ),
-                          ),
+                            )),
+                          ],
                         ),
-                        DataColumn2(
-                          label: DefaultTextStyle.merge(
-                            softWrap: true,
-                            child: Text(
-                              FFLocalizations.of(context).getText(
-                                'rlnbs4eg' /* Edit Header 3 */,
-                              ),
-                              style: FlutterFlowTheme.of(context)
-                                  .labelLarge
-                                  .override(
-                                    fontFamily: 'Readex Pro',
-                                    letterSpacing: 0.0,
-                                  ),
-                            ),
-                          ),
-                        ),
-                      ],
-                      dataRowBuilder: (inventoryTableItem, inventoryTableIndex,
-                              selected, onSelectChanged) =>
-                          DataRow(
-                        color: MaterialStateProperty.all(
-                          inventoryTableIndex % 2 == 0
-                              ? FlutterFlowTheme.of(context).secondaryBackground
-                              : FlutterFlowTheme.of(context).primaryBackground,
-                        ),
-                        cells: [
-                          Text(
-                            FFLocalizations.of(context).getText(
-                              'xp1umc21' /* Edit Column 1 */,
-                            ),
-                            style: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .override(
-                                  fontFamily: 'Readex Pro',
-                                  letterSpacing: 0.0,
-                                ),
-                          ),
-                          Text(
-                            FFLocalizations.of(context).getText(
-                              'jyua1z5x' /* Edit Column 2 */,
-                            ),
-                            style: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .override(
-                                  fontFamily: 'Readex Pro',
-                                  letterSpacing: 0.0,
-                                ),
-                          ),
-                          Text(
-                            FFLocalizations.of(context).getText(
-                              'vzfs5e2c' /* Edit Column 3 */,
-                            ),
-                            style: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .override(
-                                  fontFamily: 'Readex Pro',
-                                  letterSpacing: 0.0,
-                                ),
-                          ),
-                        ].map((c) => DataCell(c)).toList(),
-                      ),
-                      paginated: true,
-                      selectable: false,
-                      hidePaginator: false,
-                      showFirstLastButtons: false,
-                      headingRowHeight: 56.0,
-                      dataRowHeight: 48.0,
-                      columnSpacing: 20.0,
-                      headingRowColor: FlutterFlowTheme.of(context).primary,
-                      borderRadius: BorderRadius.circular(8.0),
-                      addHorizontalDivider: true,
-                      addTopAndBottomDivider: false,
-                      hideDefaultHorizontalDivider: true,
-                      horizontalDividerColor:
-                          FlutterFlowTheme.of(context).secondaryBackground,
-                      horizontalDividerThickness: 1.0,
-                      addVerticalDivider: false,
-                    );
+                        paginated: true,
+                        selectable: false,
+                        hidePaginator: false,
+                        showFirstLastButtons: false,
+                        headingRowHeight: 56.0,
+                        dataRowHeight: 48.0,
+                        columnSpacing: 20.0,
+                        headingRowColor: FlutterFlowTheme.of(context).primary,
+                        borderRadius: BorderRadius.circular(8.0),
+                        addHorizontalDivider: true,
+                        addTopAndBottomDivider: false,
+                        hideDefaultHorizontalDivider: true,
+                        horizontalDividerColor:
+                            FlutterFlowTheme.of(context).secondaryBackground,
+                        horizontalDividerThickness: 1.0,
+                        addVerticalDivider: false,
+                      );
+                    }
                   },
                 ),
               ),
@@ -387,3 +351,4 @@ class _InventoriesWidgetState extends State<InventoriesWidget> {
     );
   }
 }
+
