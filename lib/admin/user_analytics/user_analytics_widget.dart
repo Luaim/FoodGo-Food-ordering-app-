@@ -32,11 +32,12 @@ class _UserAnalyticsWidgetState extends State<UserAnalyticsWidget> {
   void initState() {
     super.initState();
     _model = createModel(context, () => UserAnalyticsModel());
+    _model.fetchUsers();
   }
 
   @override
   void dispose() {
-    _model.dispose();
+    _model.paginatedDataTableController.dispose();
 
     super.dispose();
   }
@@ -81,7 +82,8 @@ class _UserAnalyticsWidgetState extends State<UserAnalyticsWidget> {
                   // Navigate to the admin profile page
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => AdminProfileWidget()),
+                    MaterialPageRoute(
+                        builder: (context) => AdminProfileWidget()),
                   );
                 },
                 child: Container(
@@ -125,7 +127,8 @@ class _UserAnalyticsWidgetState extends State<UserAnalyticsWidget> {
                         // Navigate to the home page
                         Navigator.pushAndRemoveUntil(
                           context,
-                          MaterialPageRoute(builder: (context) => HomePageWidget()),
+                          MaterialPageRoute(
+                              builder: (context) => HomePageWidget()),
                           (Route<dynamic> route) => false,
                         );
                       },
@@ -149,7 +152,8 @@ class _UserAnalyticsWidgetState extends State<UserAnalyticsWidget> {
                         // Navigate to the transactions page
                         Navigator.pushAndRemoveUntil(
                           context,
-                          MaterialPageRoute(builder: (context) => TransactionsWidget()),
+                          MaterialPageRoute(
+                              builder: (context) => TransactionsWidget()),
                           (Route<dynamic> route) => false,
                         );
                       },
@@ -173,7 +177,8 @@ class _UserAnalyticsWidgetState extends State<UserAnalyticsWidget> {
                         // Navigate to the inventories page
                         Navigator.pushAndRemoveUntil(
                           context,
-                          MaterialPageRoute(builder: (context) => InventoriesWidget()),
+                          MaterialPageRoute(
+                              builder: (context) => InventoriesWidget()),
                           (Route<dynamic> route) => false,
                         );
                       },
@@ -197,7 +202,8 @@ class _UserAnalyticsWidgetState extends State<UserAnalyticsWidget> {
                         // Navigate to the user analytics page
                         Navigator.pushAndRemoveUntil(
                           context,
-                          MaterialPageRoute(builder: (context) => UserAnalyticsWidget()),
+                          MaterialPageRoute(
+                              builder: (context) => UserAnalyticsWidget()),
                           (Route<dynamic> route) => false,
                         );
                       },
@@ -221,7 +227,8 @@ class _UserAnalyticsWidgetState extends State<UserAnalyticsWidget> {
                         // Navigate to the complaint chat flow
                         Navigator.pushAndRemoveUntil(
                           context,
-                          MaterialPageRoute(builder: (context) => Chat2MainWidget()),
+                          MaterialPageRoute(
+                              builder: (context) => Chat2MainWidget()),
                           (Route<dynamic> route) => false,
                         );
                       },
@@ -245,7 +252,8 @@ class _UserAnalyticsWidgetState extends State<UserAnalyticsWidget> {
                         // Navigate to the order management page
                         Navigator.pushAndRemoveUntil(
                           context,
-                          MaterialPageRoute(builder: (context) => OrderManagementWidget()),
+                          MaterialPageRoute(
+                              builder: (context) => OrderManagementWidget()),
                           (Route<dynamic> route) => false,
                         );
                       },
@@ -310,167 +318,161 @@ class _UserAnalyticsWidgetState extends State<UserAnalyticsWidget> {
                       ),
                     ),
                     Expanded(
-                      child: Builder(
-                        builder: (context) {
-                          final userAnalytics = List.generate(
-                              random_data.randomInteger(5, 5),
-                              (index) => random_data.randomString(
-                                    0,
-                                    0,
-                                    true,
-                                    true,
-                                    false,
-                                  )).toList();
-                          return FlutterFlowDataTable<String>(
-                            controller: _model.paginatedDataTableController,
-                            data: userAnalytics,
-                            numRows: valueOrDefault<int>(
-                              random_data.randomInteger(1, 10),
-                              5,
-                            ),
-                            columnsBuilder: (onSortChanged) => [
-                              DataColumn2(
-                                label: DefaultTextStyle.merge(
-                                  softWrap: true,
-                                  child: Text(
-                                    FFLocalizations.of(context).getText(
-                                      'ee8hve1u' /* Edit Header 1 */,
+                      child: FutureBuilder<void>(
+                        future: _model.fetchUsers(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Center(child: CircularProgressIndicator());
+                          } else if (snapshot.hasError) {
+                            return Center(
+                                child: Text(
+                                    'Error fetching data: ${snapshot.error}'));
+                          } else {
+                            final inventoryTable = _model.users;
+                            return FlutterFlowDataTable<String>(
+                              controller: _model.paginatedDataTableController,
+                              data: inventoryTable
+                                  .map((item) => item.toString())
+                                  .toList(),
+                              numRows: inventoryTable.length,
+                              columnsBuilder: (onSortChanged) => [
+                                DataColumn2(
+                                  label: DefaultTextStyle.merge(
+                                    softWrap: true,
+                                    child: Text(
+                                      'Email',
+                                      style: FlutterFlowTheme.of(context)
+                                          .labelLarge
+                                          .override(
+                                            fontFamily: 'Readex Pro',
+                                            letterSpacing: 0.0,
+                                          ),
                                     ),
+                                  ),
+                                ),
+                                DataColumn2(
+                                  label: DefaultTextStyle.merge(
+                                    softWrap: true,
+                                    child: Text(
+                                      'Password',
+                                      style: FlutterFlowTheme.of(context)
+                                          .labelLarge
+                                          .override(
+                                            fontFamily: 'Readex Pro',
+                                            letterSpacing: 0.0,
+                                          ),
+                                    ),
+                                  ),
+                                ),
+                                DataColumn2(
+                                  label: DefaultTextStyle.merge(
+                                    softWrap: true,
+                                    child: Text(
+                                      'User Role',
+                                      style: FlutterFlowTheme.of(context)
+                                          .labelLarge
+                                          .override(
+                                            fontFamily: 'Readex Pro',
+                                            letterSpacing: 0.0,
+                                          ),
+                                    ),
+                                  ),
+                                ),
+                                DataColumn2(
+                                  label: DefaultTextStyle.merge(
+                                    softWrap: true,
+                                    child: Text(
+                                      'Username',
+                                      style: FlutterFlowTheme.of(context)
+                                          .labelLarge
+                                          .override(
+                                            fontFamily: 'Readex Pro',
+                                            letterSpacing: 0.0,
+                                          ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                              dataRowBuilder: (inventoryTableItem,
+                                      inventoryTableIndex,
+                                      selected,
+                                      onSelectChanged) =>
+                                  DataRow(
+                                color: MaterialStateProperty.all(
+                                  inventoryTableIndex % 2 == 0
+                                      ? FlutterFlowTheme.of(context)
+                                          .secondaryBackground
+                                      : FlutterFlowTheme.of(context)
+                                          .primaryBackground,
+                                ),
+                                cells: [
+                                  DataCell(Text(
+                                    inventoryTable[inventoryTableIndex]
+                                            ['Email'] ??
+                                        '',
                                     style: FlutterFlowTheme.of(context)
-                                        .labelLarge
+                                        .bodyMedium
                                         .override(
                                           fontFamily: 'Readex Pro',
                                           letterSpacing: 0.0,
                                         ),
-                                  ),
-                                ),
-                              ),
-                              DataColumn2(
-                                label: DefaultTextStyle.merge(
-                                  softWrap: true,
-                                  child: Text(
-                                    FFLocalizations.of(context).getText(
-                                      'm7664by8' /* Edit Header 2 */,
-                                    ),
+                                  )),
+                                  DataCell(Text(
+                                    inventoryTable[inventoryTableIndex]
+                                            ['Password'] ??
+                                        '',
                                     style: FlutterFlowTheme.of(context)
-                                        .labelLarge
+                                        .bodyMedium
                                         .override(
                                           fontFamily: 'Readex Pro',
                                           letterSpacing: 0.0,
                                         ),
-                                  ),
-                                ),
-                              ),
-                              DataColumn2(
-                                label: DefaultTextStyle.merge(
-                                  softWrap: true,
-                                  child: Text(
-                                    FFLocalizations.of(context).getText(
-                                      '8alomqqd' /* Edit Header 3 */,
-                                    ),
+                                  )),
+                                  DataCell(Text(
+                                    inventoryTable[inventoryTableIndex]
+                                            ['User Role'] ??
+                                        '',
                                     style: FlutterFlowTheme.of(context)
-                                        .labelLarge
+                                        .bodyMedium
                                         .override(
                                           fontFamily: 'Readex Pro',
                                           letterSpacing: 0.0,
                                         ),
-                                  ),
-                                ),
-                              ),
-                              DataColumn2(
-                                label: DefaultTextStyle.merge(
-                                  softWrap: true,
-                                  child: Text(
-                                    FFLocalizations.of(context).getText(
-                                      '8alomqqd' /* Edit Header 4 */,
-                                    ),
+                                  )),
+                                  DataCell(Text(
+                                    inventoryTable[inventoryTableIndex]
+                                            ['Username'] ??
+                                        '',
                                     style: FlutterFlowTheme.of(context)
-                                        .labelLarge
+                                        .bodyMedium
                                         .override(
                                           fontFamily: 'Readex Pro',
                                           letterSpacing: 0.0,
                                         ),
-                                  ),
-                                ),
+                                  )),
+                                ],
                               ),
-                            ],
-                            dataRowBuilder: (userAnalyticsItem,
-                                    userAnalyticsIndex,
-                                    selected,
-                                    onSelectChanged) =>
-                                DataRow(
-                              color: MaterialStateProperty.all(
-                                userAnalyticsIndex % 2 == 0
-                                    ? FlutterFlowTheme.of(context)
-                                        .secondaryBackground
-                                    : FlutterFlowTheme.of(context)
-                                        .primaryBackground,
-                              ),
-                              cells: [
-                                Text(
-                                  FFLocalizations.of(context).getText(
-                                    '2wtdmc95' /* Edit Column 1 */,
-                                  ),
-                                  style: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .override(
-                                        fontFamily: 'Readex Pro',
-                                        letterSpacing: 0.0,
-                                      ),
-                                ),
-                                Text(
-                                  FFLocalizations.of(context).getText(
-                                    'l9449u4p' /* Edit Column 2 */,
-                                  ),
-                                  style: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .override(
-                                        fontFamily: 'Readex Pro',
-                                        letterSpacing: 0.0,
-                                      ),
-                                ),
-                                Text(
-                                  FFLocalizations.of(context).getText(
-                                    'wg8n1jrq' /* Edit Column 3 */,
-                                  ),
-                                  style: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .override(
-                                        fontFamily: 'Readex Pro',
-                                        letterSpacing: 0.0,
-                                      ),
-                                ),
-                                Text(
-                                  FFLocalizations.of(context).getText(
-                                    'wg8n1jrq' /* Edit Column 4 */,
-                                  ),
-                                  style: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .override(
-                                        fontFamily: 'Readex Pro',
-                                        letterSpacing: 0.0,
-                                      ),
-                                ),
-                              ].map((c) => DataCell(c)).toList(),
-                            ),
-                            paginated: true,
-                            selectable: false,
-                            hidePaginator: false,
-                            showFirstLastButtons: false,
-                            headingRowHeight: 56.0,
-                            dataRowHeight: 48.0,
-                            columnSpacing: 20.0,
-                            headingRowColor:
-                                FlutterFlowTheme.of(context).primary,
-                            borderRadius: BorderRadius.circular(8.0),
-                            addHorizontalDivider: true,
-                            addTopAndBottomDivider: false,
-                            hideDefaultHorizontalDivider: true,
-                            horizontalDividerColor: FlutterFlowTheme.of(context)
-                                .secondaryBackground,
-                            horizontalDividerThickness: 1.0,
-                            addVerticalDivider: false,
-                          );
+                              paginated: true,
+                              selectable: false,
+                              hidePaginator: false,
+                              showFirstLastButtons: false,
+                              headingRowHeight: 56.0,
+                              dataRowHeight: 48.0,
+                              columnSpacing: 20.0,
+                              headingRowColor:
+                                  FlutterFlowTheme.of(context).primary,
+                              borderRadius: BorderRadius.circular(8.0),
+                              addHorizontalDivider: true,
+                              addTopAndBottomDivider: false,
+                              hideDefaultHorizontalDivider: true,
+                              horizontalDividerColor:
+                                  FlutterFlowTheme.of(context)
+                                      .secondaryBackground,
+                              horizontalDividerThickness: 1.0,
+                              addVerticalDivider: false,
+                            );
+                          }
                         },
                       ),
                     ),
