@@ -35,7 +35,7 @@ FoodGo is revolutionizing the food delivery service in Malaysia by bridging the 
 
 # Setup and Installation
 1- Clone the repository:
-git clone https://github.com/yourusername/foodgo.git
+git clone https://github.com/Luaim/FoodGo-Food-ordering-app-
 
 2- Navigate to the project directory:
 cd foodgo
